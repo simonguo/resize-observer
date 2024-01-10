@@ -1,5 +1,5 @@
 import { process } from './process';
-import { global } from './global';
+import { globalObject } from './globalObject';
 import { queueResizeObserver } from './queueResizeObserver';
 
 let watching = 0;
@@ -86,7 +86,7 @@ class Scheduler {
   private observe (): void {
     const cb = (): void => this.observer && this.observer.observe(document.body, observerConfig);
     /* istanbul ignore next */
-    document.body ? cb() : global.addEventListener('DOMContentLoaded', cb);
+    document.body ? cb() : globalObject.addEventListener('DOMContentLoaded', cb);
   }
 
   public start (): void {
@@ -94,14 +94,14 @@ class Scheduler {
       this.stopped = false;
       this.observer = new MutationObserver(this.listener);
       this.observe();
-      events.forEach((name): void => global.addEventListener(name, this.listener, true));
+      events.forEach((name): void => globalObject.addEventListener(name, this.listener, true));
     }
   }
 
   public stop (): void {
     if (!this.stopped) {
       this.observer && this.observer.disconnect();
-      events.forEach((name): void => global.removeEventListener(name, this.listener, true));
+      events.forEach((name): void => globalObject.removeEventListener(name, this.listener, true));
       this.stopped = true;
     }
   }
